@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "nlohmann/json.hpp"
+
+const std::string CONFIG_PATH = "config.json";
 
 class ConverterJSON {
 public:
@@ -25,5 +28,5 @@ public:
 /**
 * Положить в файл answers.json результаты поисковых запросов
 */
-    void putAnswers(std::vector<std::vector<std::pair<int, float>>>answers);
+    void putAnswers(std::vector<std::vector<std::pair<int, float>>> answers);
 };
