@@ -3,10 +3,13 @@
 #include <vector>
 #include "nlohmann/json.hpp"
 
-const std::string CONFIG_PATH = "config.json";
 
 class ConverterJSON {
 public:
+    const std::string CONFIG_PATH = "config.json";
+    const std::string REQUESTS_PATH = "requests.json";
+    const std::string ANSWERS_PATH = "answers.json";
+
     ConverterJSON() = default;
 /**
 * Метод получения содержимого файлов
