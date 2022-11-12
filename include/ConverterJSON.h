@@ -5,6 +5,8 @@
 
 
 class ConverterJSON {
+private:
+    size_t requestCount = 0;
 public:
     const std::string CONFIG_PATH = "config.json";
     const std::string REQUESTS_PATH = "requests.json";

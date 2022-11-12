@@ -16,6 +16,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     for (auto it = data["requests"].begin(); it != data["requests"].end(); it++) {
         requests.push_back(*it);
     }
+    requestCount = requests.size();
     return requests;
 }
 
@@ -60,5 +61,30 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
 }
 
 void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> &answers) {
-
+    std::ofstream file(ANSWERS_PATH);
+    if (answers.empty()) {
+        file.close();
+        return;
+    } else {
+        nlohmann::json json;
+        std::string requestName;
+        size_t requestNumber;
+        for (int i = 0; i < answers.size(); ++i) {
+            requestNumber = i + 1;
+            if (requestNumber < 10) requestName = "request00";
+            else if (requestNumber < 100) requestName = "request0";
+            else requestName = "request";
+            requestName += std::to_string(requestNumber);
+            if (answers[i].empty()) {
+                json["answers"][requestName]["result"] = "false";
+            } else {
+                json["answers"][requestName]["result"] = "true";
+                for (int j = 0; j < answers[i].size(); ++j) {
+                    json["answers"][requestName]["relevance"] += {{"docid", answers[i][j].first}, {"rank", answers[i][j].second}};
+                }
+            }
+        }
+        file << json;
+        file.close();
+    }
 }
