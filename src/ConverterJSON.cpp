@@ -45,7 +45,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
     }
     if (!files.empty()) {
         for (int i = 0; i < files.size(); ++i) {
-            std::ifstream file(files[i]);
+            file.open(files[i]);
             if (file.is_open()) {
                 auto ss = std::ostringstream{};
                 ss << file.rdbuf();
@@ -53,6 +53,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
             } else {
                 std::cout << "Unable to open file " << files[i] << std::endl;
             }
+            file.close();
         }
     }
     return documents;
