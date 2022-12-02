@@ -10,6 +10,7 @@ struct Entry {
         return (doc_id == other.doc_id &&
                 count == other.count);
     }
+    Entry(size_t _id, size_t _count) : doc_id(_id), count(_count){};
 };
 class InvertedIndex {
 public:

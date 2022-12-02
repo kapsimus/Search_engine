@@ -31,32 +31,18 @@ int ConverterJSON::GetResponsesLimit() {
 }
 
 std::vector<std::string> ConverterJSON::GetTextDocuments() {
-    std::vector<std::string> documents;
     std::vector<std::string> files;
     std::ifstream file(CONFIG_PATH);
     if (!file.is_open()) {
         std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
-        return documents;
+        return files;
     }
     nlohmann::json data = nlohmann::json::parse(file);
     file.close();
     for (auto it = data["files"].begin(); it != data["files"].end(); it++) {
         files.push_back(*it);
     }
-    if (!files.empty()) {
-        for (int i = 0; i < files.size(); ++i) {
-            file.open(files[i]);
-            if (file.is_open()) {
-                auto ss = std::ostringstream{};
-                ss << file.rdbuf();
-                documents.push_back(ss.str());
-            } else {
-                std::cout << "Unable to open file " << files[i] << std::endl;
-            }
-            file.close();
-        }
-    }
-    return documents;
+    return files;
 }
 
 void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> &answers) {
