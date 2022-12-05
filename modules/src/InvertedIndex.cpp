@@ -27,7 +27,10 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
         }
     } else return;
 
-    auto task = [&mutex](size_t& _id, std::map<std::string, std::vector<Entry>>& _freq_dictionary, std::vector<std::string>& _docs){
+    auto task = [&mutex]
+            (size_t& _id,
+            std::map<std::string, std::vector<Entry>>& _freq_dictionary,
+            std::vector<std::string>& _docs) {
         mutex.lock();
         int currentId(_id);
         _id++;
