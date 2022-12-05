@@ -27,18 +27,23 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
         }
     } else return;
 
-    auto task = [&mutex](size_t& _id, std::map<std::string, std::vector<Entry>>& _freq_ictionary, std::vector<std::string>& _docs){
+    auto task = [&mutex](size_t& _id, std::map<std::string, std::vector<Entry>>& _freq_dictionary, std::vector<std::string>& _docs){
         mutex.lock();
         int currentId(_id);
         _id++;
         mutex.unlock();
+        if (currentId >= _docs.size()) {
+            return;
+        }
         std::string text = _docs[currentId];
+        std::string word;
         std::stringstream sStream;
+        sStream << text;
         std::map<std::string, Entry> tempIndex;
-        while (sStream << text) {
-            auto it = tempIndex.find(sStream.str());
+        while (sStream >> word) {
+            auto it = tempIndex.find(word);
             if (it == tempIndex.end()) {
-                tempIndex.insert(std::pair<std::string, Entry>(sStream.str(), Entry(currentId, 1)));
+                tempIndex.insert(std::pair<std::string, Entry>(word, Entry(currentId, 1)));
             } else {
                 it->second.count++;
             }
@@ -47,30 +52,39 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
             std::string currentWord;
             mutex.lock();
             for (auto it = tempIndex.begin(); it != tempIndex.end(); it++) {
-                auto it2 = _freq_ictionary.find(it->first);
-                if (it2 != _freq_ictionary.end()) {
+                auto it2 = _freq_dictionary.find(it->first);
+                if (it2 != _freq_dictionary.end()) {
                     it2->second.push_back(it->second);
                 } else {
                     std::vector<Entry> tempEntry;
                     tempEntry.push_back(it->second);
-                    _freq_ictionary.insert(std::pair<std::string, std::vector<Entry>>(it->first, tempEntry));
+                    _freq_dictionary.insert(std::pair<std::string, std::vector<Entry>>(it->first, tempEntry));
                 }
             }
             mutex.unlock();
         }
     };
 
-    const size_t MAX_ID = input_docs.size();
+    const size_t DOCS_SIZE = input_docs.size();
     std::vector<std::thread> threadIndex;
     size_t docId = 0;
     unsigned int threadCount = std::thread::hardware_concurrency();
-    if (threadCount == 0) {
+    if (threadCount <= 0) {
         threadCount = MIN_THREAD_COUNT;
     }
-    for (int threadNum = 0; threadNum < threadCount && threadNum < MAX_ID; threadNum++) {
+    for (int threadNum = 0; threadNum < threadCount && threadNum < DOCS_SIZE; threadNum++) {
         threadIndex.push_back(std::thread(task, std::ref(docId), std::ref(freq_dictionary), std::ref(docs)));
     }
     for (int threadNum = 0; threadNum < threadIndex.size(); threadNum++) {
         threadIndex[threadNum].join();
+    }
+}
+
+std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word) {
+    auto it = freq_dictionary.find(word);
+    if (it != freq_dictionary.end()){
+        return it->second;
+    } else {
+        return std::vector<Entry>();
     }
 }
