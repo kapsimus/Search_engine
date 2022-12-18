@@ -15,8 +15,8 @@ int main() {
     index.UpdateDocumentBase(conv.GetTextDocuments());
     std::vector<Entry> wordsCount = index.GetWordCount("123");
     SearchServer server(index);
-    server.search(conv.GetRequests());
-    std::vector<std::vector<std::pair<int, float>>> answers{{{1, 0.99},{2, 0.88}},{}};
+
+    std::vector<std::vector<RelativeIndex>> answers = server.search(conv.GetRequests());
     conv.putAnswers(answers);
     std::cout << "response limit: " << responseLimit << std::endl;
     return 0;

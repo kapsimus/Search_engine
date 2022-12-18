@@ -45,7 +45,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
     return files;
 }
 
-void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> &answers) {
+void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
     std::ofstream file(ANSWERS_PATH);
     if (answers.empty()) {
         file.close();
@@ -65,11 +65,11 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> &
             } else {
                 json["answers"][requestName]["result"] = "true";
                 for (int j = 0; j < answers[i].size(); ++j) {
-                    json["answers"][requestName]["relevance"] += {{"docid", answers[i][j].first}, {"rank", answers[i][j].second}};
+                    json["answers"][requestName]["relevance"] += {{"docid", answers[i][j].doc_id}, {"rank", answers[i][j].rank}};
                 }
             }
         }
-        file << json;
+        file << json.dump(4);
         file.close();
     }
 }

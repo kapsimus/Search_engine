@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "nlohmann/json.hpp"
+#include "SearchServer.h"
 
 
 class ConverterJSON {
@@ -33,5 +34,5 @@ public:
 /**
 * Положить в файл answers.json результаты поисковых запросов
 */
-    void putAnswers(std::vector<std::vector<std::pair<int, float>>> &answers);
+    void putAnswers(std::vector<std::vector<RelativeIndex>> &answers);
 };

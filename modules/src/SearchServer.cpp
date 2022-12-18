@@ -87,23 +87,37 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
             //docsId.back() - список id документов на последней итерации поиска.
             std::vector<size_t> foundDocsId = docsId.back();
             std::map<size_t, std::vector<int>> absIndexesTable;
+            int maxAbsRel = 0;
             for (size_t docID: foundDocsId) {
                 std::vector<int> wordsCountInDoc(frequency.size());
                 std::vector<Entry> entryList;
+                int currentAbsRel = 0;
                 for (int i = 0; i < words.size(); i++) {
-                    wordsCountInDoc.push_back(0);
                     entryList = _index.GetWordCount(words[i]);
                     for (Entry entry: entryList) {
                         if (entry.doc_id == docID) {
                             wordsCountInDoc[i] += entry.count;
+                            currentAbsRel += entry.count;
                         }
                     }
                 }
+                if (currentAbsRel > maxAbsRel) {
+                    maxAbsRel = currentAbsRel;
+                }
                 absIndexesTable.insert(std::pair<size_t, std::vector<int>>(docID, wordsCountInDoc));
             }
+            for (auto currentDoc: absIndexesTable) {
+                RelativeIndex relIndex;
+                relIndex.doc_id = currentDoc.first;
+                int currentAbsRel = 0;
+                for (auto wordsCount: currentDoc.second) {
+                    currentAbsRel += wordsCount;
+                }
+                relIndex.rank = (float)currentAbsRel / maxAbsRel;
+                relIndexes.push_back(relIndex);
+            }
         }
-
+    out.push_back(relIndexes);
     }
-
     return out;
 }
