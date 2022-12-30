@@ -45,6 +45,47 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
     return files;
 }
 
+void ConverterJSON::NormalizeDocuments() {
+    auto docList = this->GetTextDocuments();
+    if (!docList.empty()) {
+        for (int i = 0; i < docList.size(); ++i) {
+            std::ifstream file(docList[i]);
+            if (file.is_open()) {
+                std::string in, out;
+                auto ss = std::ostringstream{};
+                ss << file.rdbuf();
+                in = ss.str();
+                file.close();
+                for (auto symbol: in) {
+                    if (symbol > 96 && symbol < 123) {
+                        out += symbol;
+                    } else if (symbol > 64 && symbol < 91) {
+                        out += (symbol + 32);
+                    } else if (symbol == ' ') {
+                        out += symbol;
+                    } else if (symbol == '-') {
+                        out += symbol;
+                    } else if (symbol == '\'') {
+                        out += symbol;
+                    }else if (symbol > 47 && symbol < 58) {
+                        out += symbol;
+                    }
+                }
+                std::ofstream fileOut(docList[i]);
+                if (fileOut.is_open()) {
+                    fileOut << out;
+                    fileOut.close();
+                } else {
+                    std::cout << "Unable to open file " << docList[i] << std::endl;
+                }
+            } else {
+                std::cout << "Unable to open file " << docList[i] << std::endl;
+            }
+        }
+    } else return;
+
+}
+
 void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
     std::ofstream file(ANSWERS_PATH);
     if (answers.empty()) {

@@ -1,5 +1,6 @@
 #include <map>
 #include <sstream>
+#include <algorithm>
 #include "SearchServer.h"
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string> &queries_input) {
@@ -116,8 +117,16 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
                 relIndex.rank = (float)currentAbsRel / maxAbsRel;
                 relIndexes.push_back(relIndex);
             }
+            out.push_back(relIndexes);
         }
-    out.push_back(relIndexes);
+    }
+    //сортировка в порядке возрастания относительных индексов
+    if (!out.empty()) {
+        for (auto& indexes: out) {
+            std::sort(indexes.begin(), indexes.end(), [](RelativeIndex a, RelativeIndex b) {
+                return a.rank > b.rank;
+            });
+        }
     }
     return out;
 }

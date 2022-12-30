@@ -4,13 +4,12 @@
 #include <sstream>
 #include <thread>
 #include <mutex>
-#include <sstream>
 #include <map>
 #include "InvertedIndex.h"
 
 
 
-void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
+void InvertedIndex::UpdateDocumentBase(const std::vector<std::string> &input_docs) {
     const unsigned int MIN_THREAD_COUNT = 8;
     std::mutex mutex;
     if (!input_docs.empty()) {

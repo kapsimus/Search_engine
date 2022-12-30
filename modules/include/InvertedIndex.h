@@ -20,7 +20,7 @@ public:
 поиск
 * @param input_docs содержимое документов
 */
-    void UpdateDocumentBase(std::vector<std::string> input_docs);
+    void UpdateDocumentBase(const std::vector<std::string>& input_docs);
 /**
 * Метод определяет количество вхождений слова word в загруженной базе
 документов
@@ -32,3 +32,4 @@ private:
     std::vector<std::string> docs; // список содержимого документов
     std::map<std::string, std::vector<Entry>> freq_dictionary; // частотный словарь
 };
+

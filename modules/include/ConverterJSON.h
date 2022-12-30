@@ -7,7 +7,7 @@
 
 class ConverterJSON {
 private:
-    size_t requestCount = 0;
+    size_t requestCount = 8;
 public:
     const std::string CONFIG_PATH = "config.json";
     const std::string REQUESTS_PATH = "requests.json";
@@ -17,7 +17,7 @@ public:
 /**
 * Метод получения содержимого файлов
 * @return Возвращает список с содержимым файлов перечисленных
-* в config.json
+* в config.json (пути к файлам)
 */
     std::vector<std::string> GetTextDocuments();
 /**
@@ -26,6 +26,12 @@ public:
 * @return
 */
     int GetResponsesLimit();
+
+/**
+* Метод преобразует текст в файлах - переводит все латинские буквы в
+* нижний регистр и удаляет все знаки припинания кроме дефисов
+*/
+    void NormalizeDocuments();
 /**
 * Метод получения запросов из файла requests.json
 * @return возвращает список запросов из файла requests.json

@@ -10,6 +10,7 @@
 int main() {
     ConverterJSON conv;
     InvertedIndex index;
+    conv.NormalizeDocuments();
     int responseLimit = conv.GetResponsesLimit();
     std::vector<std::string> requests = conv.GetRequests();
     index.UpdateDocumentBase(conv.GetTextDocuments());
