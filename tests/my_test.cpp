@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 // Demonstrate some basic assertions.
-TEST(Search_engine_tests, BasicAssertions) {
+TEST(TestCaseInvertedIndex, BasicAssertions) {
     // Expect two strings not to be equal.
     EXPECT_STRNE("hello", "world");
     // Expect equality.
@@ -24,7 +24,7 @@ result.push_back(word_count);
 }
 ASSERT_EQ(result, expected);
 }
-/*
+
 TEST(TestCaseInvertedIndex, TestBasic) {
     const std::vector<std::string> docs = {
             "london is the capital of great britain",
@@ -73,5 +73,5 @@ TEST(TestCaseInvertedIndex, TestInvertedIndexMissingWord) {
     };
     TestInvertedIndexFunctionality(docs, requests, expected);
 }
- */
+
 

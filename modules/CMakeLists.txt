@@ -8,4 +8,3 @@ add_executable(Search_engine src/main.cpp include/ConverterJSON.h src/ConverterJ
 
 target_include_directories(Search_engine PUBLIC include)
 target_include_directories(Search_engine PUBLIC ../nlohmann_json/include)
-#target_link_libraries(Search_engine)

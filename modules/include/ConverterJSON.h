@@ -37,6 +37,25 @@ public:
 * @return возвращает список запросов из файла requests.json
 */
     std::vector<std::string> GetRequests();
+
+/**
+* Метод получения данных из файла config.json
+* @return возвращает данные файла config.json  в формате nlohmann::json
+*/
+    nlohmann::json GetConfig();
+
+/**
+* Метод записи запросов в файл requests.json
+* @return возвращает true в случае успеха и false в случае неудачи
+*/
+     bool SetRequests(const std::vector<std::string>& requestList);
+
+/**
+* Метод записи текстов в файл config.json
+* @return возвращает true в случае успеха и false в случае неудачи
+*/
+    bool WriteDocsToFiles(const std::vector<std::string>& documentsList);
+
 /**
 * Положить в файл answers.json результаты поисковых запросов
 */

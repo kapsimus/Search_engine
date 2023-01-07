@@ -19,6 +19,81 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     return requests;
 }
 
+bool ConverterJSON::SetRequests(const std::vector<std::string>& requestList) {
+    if (!requestList.empty()) {
+        std::ofstream file(REQUESTS_PATH);
+        if (!file.is_open()) {
+            std::cout << "Unable to open file " << REQUESTS_PATH << std::endl;
+            return false;
+        }
+        nlohmann::json json;
+        for (auto request: requestList){
+            json["requests"] += request;
+        }
+        file << json.dump(4);
+        file.close();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsList) {
+    nlohmann::json config = this->GetConfig();
+    if (config.empty()) {
+        return false;
+    }
+    config["files"].clear();
+    std::string prefix{"./resources/filename"};
+    int fileNumber = 1;
+    if (!documentsList.empty()) {
+        std::string suffix;
+        std::string filename;
+        for (auto doc: documentsList) {
+            suffix = std::to_string(fileNumber) + ".txt";
+            if (fileNumber > 999) {
+                filename = prefix + suffix;
+            } else if (fileNumber > 99) {
+
+                filename = prefix + "0" + suffix;
+            } else if (fileNumber > 9) {
+                filename = prefix + "00" + suffix;
+            } else  {
+                filename = prefix + "000" + suffix;
+            }
+            config["files"] += filename;
+            ++fileNumber;
+            std::ofstream file(filename);
+            if (!file.is_open()) {
+                std::cout << "Unable to open file " << filename << std::endl;
+                return false;
+            }
+            file << doc;
+            file.close();
+        }
+        std::ofstream fileConfig(CONFIG_PATH);
+        if (!fileConfig.is_open()) {
+            std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+            return false;
+        }
+        fileConfig << config.dump(4);
+        fileConfig.close();
+    }
+    return true;
+}
+
+nlohmann::json ConverterJSON::GetConfig() {
+    std::ifstream file(CONFIG_PATH);
+    nlohmann::json config;
+    if (!file.is_open()) {
+        std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+        return config;
+    }
+    config = nlohmann::json::parse(file);
+    file.close();
+    return config;
+}
+
 int ConverterJSON::GetResponsesLimit() {
     std::ifstream file(CONFIG_PATH);
     if (!file.is_open()) {
