@@ -1,13 +1,6 @@
 #include "../modules/include/InvertedIndex.h"
+#include "../modules/include/ConverterJSON.h"
 #include <gtest/gtest.h>
-
-// Demonstrate some basic assertions.
-TEST(TestCaseInvertedIndex, BasicAssertions) {
-    // Expect two strings not to be equal.
-    EXPECT_STRNE("hello", "world");
-    // Expect equality.
-    EXPECT_EQ(7 * 6, 42);
-}
 
 void TestInvertedIndexFunctionality(
         const std::vector<std::string>& docs,
@@ -15,8 +8,15 @@ void TestInvertedIndexFunctionality(
         const std::vector<std::vector<Entry>>& expected
 ) {
 std::vector<std::vector<Entry>> result;
+ConverterJSON converter;
+if (!converter.WriteDocsToFiles(docs)) {
+    std::cout << "Unable to write docs to files!" << std::endl;
+}
+if (!converter.SetRequests(requests)) {
+    std::cout << "Unable to write requests to files!" << std::endl;
+}
 InvertedIndex idx;
-idx.UpdateDocumentBase(docs);
+idx.UpdateDocumentBase(converter.GetTextDocuments());
 for(auto& request : requests) {
 std::vector<Entry> word_count;
 word_count = idx.GetWordCount(request);
@@ -47,12 +47,12 @@ TEST(TestCaseInvertedIndex, TestBasic2) {
             "milk milk milk milk milk water water water water water",
             "americano cappuccino"
     };
-    const std::vector<std::string> requests = {"milk", "water", "cappuchino"};
+    const std::vector<std::string> requests = {"milk", "water", "cappuccino"};
     const std::vector<std::vector<Entry>> expected = {
             {
                     {0, 4}, {1, 1}, {2, 5}
             }, {
-                    {0, 2}, {1, 2}, {2, 5}
+                    {0, 3}, {1, 2}, {2, 5}
             }, {
                     {3, 1}
             }
