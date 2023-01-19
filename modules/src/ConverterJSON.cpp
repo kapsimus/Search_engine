@@ -2,12 +2,37 @@
 #include <iostream>
 #include "ConverterJSON.h"
 
+void ConverterJSON::SetConfigPath(const std::string &path) {
+    if (!path.empty()) {
+        CONFIG_PATH = path;
+    }
+}
+void ConverterJSON::SetRequestsPath(const std::string &path) {
+    if (!path.empty()) {
+        REQUESTS_PATH = path;
+    }
+}
+void ConverterJSON::SetAnswersPath(const std::string &path) {
+    if (!path.empty()) {
+        ANSWERS_PATH = path;
+    }
+}
+
+std::string ConverterJSON::GetConfigPath() const {
+    return CONFIG_PATH;
+}
+std::string ConverterJSON::GetRequestsPath() const {
+    return REQUESTS_PATH;
+}
+std::string ConverterJSON::GetAnswersPath() const {
+    return ANSWERS_PATH;
+}
 
 std::vector<std::string> ConverterJSON::GetRequests() {
     std::vector<std::string> requests;
-    std::ifstream file(REQUESTS_PATH);
+    std::ifstream file(GetRequestsPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << REQUESTS_PATH << std::endl;
+        std::cout << "Unable to open file " << GetRequestsPath() << std::endl;
         return requests;
     }
     nlohmann::json data = nlohmann::json::parse(file);
@@ -21,9 +46,9 @@ std::vector<std::string> ConverterJSON::GetRequests() {
 
 bool ConverterJSON::SetRequests(const std::vector<std::string>& requestList) {
     if (!requestList.empty()) {
-        std::ofstream file(REQUESTS_PATH);
+        std::ofstream file(GetRequestsPath());
         if (!file.is_open()) {
-            std::cout << "Unable to open file " << REQUESTS_PATH << std::endl;
+            std::cout << "Unable to open file " << GetRequestsPath() << std::endl;
             return false;
         }
         nlohmann::json json;
@@ -71,9 +96,9 @@ bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsLi
             file << doc;
             file.close();
         }
-        std::ofstream fileConfig(CONFIG_PATH);
+        std::ofstream fileConfig(GetConfigPath());
         if (!fileConfig.is_open()) {
-            std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+            std::cout << "Unable to open file " << GetConfigPath() << std::endl;
             return false;
         }
         fileConfig << config.dump(4);
@@ -83,10 +108,10 @@ bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsLi
 }
 
 nlohmann::json ConverterJSON::GetConfig() {
-    std::ifstream file(CONFIG_PATH);
+    std::ifstream file(GetConfigPath());
     nlohmann::json config;
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
         return config;
     }
     config = nlohmann::json::parse(file);
@@ -95,9 +120,9 @@ nlohmann::json ConverterJSON::GetConfig() {
 }
 
 int ConverterJSON::GetResponsesLimit() {
-    std::ifstream file(CONFIG_PATH);
+    std::ifstream file(GetConfigPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
         return -1;
     }
     nlohmann::json data = nlohmann::json::parse(file);
@@ -107,9 +132,9 @@ int ConverterJSON::GetResponsesLimit() {
 
 std::vector<std::string> ConverterJSON::GetTextDocuments() {
     std::vector<std::string> files;
-    std::ifstream file(CONFIG_PATH);
+    std::ifstream file(GetConfigPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << CONFIG_PATH << std::endl;
+        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
         return files;
     }
     nlohmann::json data = nlohmann::json::parse(file);
@@ -162,7 +187,7 @@ void ConverterJSON::NormalizeDocuments() {
 }
 
 void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
-    std::ofstream file(ANSWERS_PATH);
+    std::ofstream file(GetAnswersPath());
     if (answers.empty()) {
         file.close();
         return;

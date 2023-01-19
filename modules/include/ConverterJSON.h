@@ -8,10 +8,41 @@
 class ConverterJSON {
 private:
     size_t requestCount = 8;
+    std::string CONFIG_PATH = "config.json";
+    std::string REQUESTS_PATH = "requests.json";
+    std::string ANSWERS_PATH = "answers.json";
 public:
-    const std::string CONFIG_PATH = "config.json";
-    const std::string REQUESTS_PATH = "requests.json";
-    const std::string ANSWERS_PATH = "answers.json";
+/**
+* сеттер переменной пути к файлу Config
+* @path передаётся путь к файлу Config
+*/
+    void SetConfigPath(const std::string& path);
+/**
+* сеттер переменной пути к файлу Request
+* @path передаётся путь к файлу Request
+*/
+    void SetRequestsPath(const std::string& path);
+/**
+* сеттер переменной пути к файлу Answers
+* @path передаётся путь к файлу Answers
+*/
+    void SetAnswersPath(const std::string& path);
+
+/**
+* геттер переменной пути к файлу Config
+* @return возврвщается путь к файлу Config
+*/
+    std::string GetConfigPath() const;
+/**
+* геттер переменной пути к файлу Request
+* @return возврвщается путь к файлу Request
+*/
+    std::string GetRequestsPath() const;
+/**
+* геттер переменной пути к файлу Answers
+* @return возврвщается путь к файлу Answers
+*/
+    std::string GetAnswersPath() const;
 
     ConverterJSON() = default;
 /**
@@ -23,7 +54,7 @@ public:
 /**
 * Метод считывает поле max_responses для определения предельного
 * количества ответов на один запрос
-* @return
+* @return возвращает максимальное количество ответов
 */
     int GetResponsesLimit();
 
@@ -59,5 +90,5 @@ public:
 /**
 * Положить в файл answers.json результаты поисковых запросов
 */
-    void putAnswers(std::vector<std::vector<RelativeIndex>> &answers);
+    void putAnswers(std::vector<std::vector<RelativeIndex>>& answers);
 };

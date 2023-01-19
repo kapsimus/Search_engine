@@ -3,6 +3,7 @@ cmake-build-debug/
 .vs/
 out/
 Debug/
+build-SearchEngineGUI-Desktop_Qt_6_4_0_MinGW_64_bit-Debug/
 *.sln
 *.vcxproj
 *.vcxproj.filters
