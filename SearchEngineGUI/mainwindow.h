@@ -12,5 +12,7 @@ public:
     ~MainWindow();
 public slots:
     void AddFiles();
+    void SetPaths();
+    void SetConfig();
 };
 #endif // MAINWINDOW_H
