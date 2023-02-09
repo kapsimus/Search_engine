@@ -1,5 +1,9 @@
 #include <QAction>
 #include <QMenu>
+#include <QStringListModel>
+#include <QStringList>
+#include <QListView>
+#include <QFileDialog>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -10,7 +14,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w(nullptr);
     Ui::MainWindow &window = *w.getUI();
-    QObject::connect(window.action_AddFiles, &QAction::triggered, &w, &MainWindow::AddFiles);
+    QStringList fileList{"kjhkjh", "jhgfhgf"};
+
+    QObject::connect(window.action_AddFiles, &QAction::triggered, [&fileList, &w](){
+        fileList = QFileDialog::getOpenFileNames(&w,"", "d:/", "*.txt", nullptr);
+    });
     QObject::connect(window.action_Exit, &QAction::triggered, [&a](){
         a.quit();
     });
