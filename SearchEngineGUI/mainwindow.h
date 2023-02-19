@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStringList>
+#include "filelistmodel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,6 +15,8 @@ class MainWindow : public QMainWindow
 
 public:
     Ui::MainWindow* getUI();
+    FileListModel *model;
+    QItemSelectionModel *selection;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 public slots:

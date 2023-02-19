@@ -1,5 +1,6 @@
 #include <QMenu>
 #include <QTabBar>
+#include <QItemSelectionModel>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "filelistmodel.h"
@@ -10,12 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tabWindow->tabBar()->hide();
+    model = new FileListModel(this);
+    ui->listView->setModel(model);
+    selection = new QItemSelectionModel(model);
+    ui->listView->setSelectionModel(selection);
 
-    SimpleFileListModel model(10, this);
-    model.setFilePath(0, "12345");
-    model.setFilePath(1, "1111111");
-    model.setFilePath(4, "44444");
-    ui->tableView->setModel(model);
 }
 
 Ui::MainWindow* MainWindow::getUI() {

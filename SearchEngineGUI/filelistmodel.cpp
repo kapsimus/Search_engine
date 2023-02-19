@@ -1,68 +1,65 @@
 #include "filelistmodel.h"
+#include <algorithm>
 
-FileListModel::FileListModel(int rows, int cols, QObject *parent)
-    :QAbstractTableModel(parent), _rowCount(rows), _colCount(cols)
+
+FileListModel::FileListModel(QObject *parent): QAbstractItemModel(parent)
 {
 
+}
+
+QModelIndex FileListModel::index(int row, int column, const QModelIndex &parent) const
+{
+    return createIndex(row, column, (void*)&_data[row]);
+}
+
+QModelIndex FileListModel::parent(const QModelIndex &child) const
+{
+    return QModelIndex();
 }
 
 int FileListModel::rowCount(const QModelIndex &parent) const
 {
-    return _rowCount;
+    return _data.size();
 }
 
 int FileListModel::columnCount(const QModelIndex &parent) const
 {
-    return -_colCount;
+    return 1;
 }
 
 QVariant FileListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid()) {
-        return QVariant();
-    } else if (role == Qt::DisplayRole) {
-        return _rowData.value(index, QVariant());
+    if (role == Qt::DisplayRole) {
+        return _data.at(index.row());
     }
     return QVariant();
-
 }
 
-bool FileListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool FileListModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if (!index.isValid()) {
+    if (_data.isEmpty() || _data.size() <= row) {
         return false;
-    } else if (role == Qt::DisplayRole) {
-        _rowData.insert(index, value);
-        emit dataChanged(index, index);
-    }
-    return false;
-}
-
-Qt::ItemFlags FileListModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid()) {
-        return Qt::NoItemFlags;
-    }
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-SimpleFileListModel::SimpleFileListModel(int rows, QObject *parent): FileListModel(rows, 1, parent)
-{
-
-}
-
-void SimpleFileListModel::setFilePath(int rowNum, QString path)
-{
-    setData(index(rowNum - 1, 0), path, Qt::EditRole);
-}
-
-QVariant SimpleFileListModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (role != Qt::DisplayRole) {
-        return QVariant();
-    } else if (orientation == Qt::Horizontal) {
-        return "Path";
     } else {
-        return QString("%3").arg(section + 1);
+    _data.removeAt(row);
+    emit layoutChanged();
+    return true;
+    }
+}
+
+void FileListModel::addValue(const QString &value)
+{
+    _data.append(value);
+    emit layoutChanged();
+}
+
+void FileListModel::deleteValues(const QItemSelection &selected)
+{
+    QModelIndexList items = selected.indexes();
+    std::sort(items.begin(), items.end());
+    int countRow = items.count();
+    for( int i = countRow; i > 0; i--) {
+        beginRemoveRows(QModelIndex(), 0, items.at(i-1).row());
+        removeRows( items.at(i-1).row(), 1, QModelIndex());
+        endRemoveRows();
     }
 }

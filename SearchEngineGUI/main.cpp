@@ -18,7 +18,15 @@ int main(int argc, char *argv[])
 
     QObject::connect(window.action_AddFiles, &QAction::triggered, [&fileList, &w](){
         fileList = QFileDialog::getOpenFileNames(&w,"", "d:/", "*.txt", nullptr);
+        for (QString &path: fileList) {
+        w.model->addValue(path);
+        }
     });
+    QObject::connect(window.pbDeletePath, &QPushButton::clicked, [&w](){
+        w.model->deleteValues(w.selection->selection());
+    });
+
+
     QObject::connect(window.action_Exit, &QAction::triggered, [&a](){
         a.quit();
     });
