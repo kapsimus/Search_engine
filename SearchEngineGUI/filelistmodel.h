@@ -5,6 +5,7 @@
 #include <QItemSelection>
 #include <QObject>
 #include <QStringList>
+#include "../modules/include/ConverterJSON.h"
 
 
 class FileListModel : public QAbstractItemModel
@@ -23,6 +24,7 @@ public:
     virtual int columnCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool removeRows(int row, int count, const QModelIndex &parent) override;
+    QVariant selectedRowData(const QItemSelection &selected);
     //virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     //virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
 public slots:

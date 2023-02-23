@@ -1,5 +1,7 @@
 #include "filelistmodel.h"
 #include <algorithm>
+#include <vector>
+#include <string>
 
 
 FileListModel::FileListModel(QObject *parent): QAbstractItemModel(parent)
@@ -46,10 +48,26 @@ bool FileListModel::removeRows(int row, int count, const QModelIndex &parent)
     }
 }
 
+QVariant FileListModel::selectedRowData(const QItemSelection &selected)
+{
+    QModelIndexList items = selected.indexes();
+    if (items.size() != 1) {
+        return QVariant();
+    } else {
+        return _data[items.begin()->row()];
+    }
+}
+
 void FileListModel::addValue(const QString &value)
 {
     _data.append(value);
     emit layoutChanged();
+    ConverterJSON conv;
+    std::vector<std::string> list;
+    for (QString str: _data) {
+        list.push_back(str.toStdString());
+    }
+    conv.WriteFilesToConfig(list);
 }
 
 void FileListModel::deleteValues(const QItemSelection &selected)
@@ -62,4 +80,10 @@ void FileListModel::deleteValues(const QItemSelection &selected)
         removeRows( items.at(i-1).row(), 1, QModelIndex());
         endRemoveRows();
     }
+    ConverterJSON conv;
+    std::vector<std::string> list;
+    for (QString str: _data) {
+        list.push_back(str.toStdString());
+    }
+    conv.WriteFilesToConfig(list);
 }

@@ -107,6 +107,27 @@ bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsLi
     return true;
 }
 
+bool ConverterJSON::WriteFilesToConfig(const std::vector<std::string> &documentsList) {
+    nlohmann::json config = this->GetConfig();
+    if (config.empty()) {
+        return false;
+    }
+    config["files"].clear();
+    if (!documentsList.empty()) {
+        for (auto doc: documentsList) {
+            config["files"] += doc;
+        }
+        std::ofstream fileConfig(GetConfigPath());
+        if (!fileConfig.is_open()) {
+            std::cout << "Unable to open file " << GetConfigPath() << std::endl;
+            return false;
+        }
+        fileConfig << config.dump(4);
+        fileConfig.close();
+    }
+    return true;
+}
+
 nlohmann::json ConverterJSON::GetConfig() {
     std::ifstream file(GetConfigPath());
     nlohmann::json config;

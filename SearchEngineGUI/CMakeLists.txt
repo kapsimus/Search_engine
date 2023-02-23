@@ -11,8 +11,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${PROJECT_NAME} ../modules/include)
+include_directories(${PROJECT_NAME} ../nlohmann_json/include)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
 
 set(PROJECT_SOURCES
         main.cpp
@@ -21,6 +24,8 @@ set(PROJECT_SOURCES
         mainwindow.ui
         filelistmodel.h
         filelistmodel.cpp
+        ../modules/include/ConverterJSON.h
+        ../modules/src/ConverterJSON.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -28,6 +33,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
+
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET SearchEngineGUI APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
@@ -63,3 +70,4 @@ install(TARGETS SearchEngineGUI
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(SearchEngineGUI)
 endif()
+

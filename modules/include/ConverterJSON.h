@@ -82,10 +82,16 @@ public:
      bool SetRequests(const std::vector<std::string>& requestList);
 
 /**
-* Метод записи текстов в файл config.json
+* Метод записи текстов в файл config.json (предназначен для теста)
 * @return возвращает true в случае успеха и false в случае неудачи
 */
     bool WriteDocsToFiles(const std::vector<std::string>& documentsList);
+
+/**
+* Метод записи путей к файлам в файл config.json
+* @return возвращает true в случае успеха и false в случае неудачи
+*/
+    bool WriteFilesToConfig(const std::vector<std::string> &documentsList);
 
 /**
 * Положить в файл answers.json результаты поисковых запросов

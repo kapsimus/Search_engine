@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QListView>
 #include <QFileDialog>
+#include <QFile>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -24,6 +25,18 @@ int main(int argc, char *argv[])
     });
     QObject::connect(window.pbDeletePath, &QPushButton::clicked, [&w](){
         w.model->deleteValues(w.selection->selection());
+    });
+    QObject::connect(w.selection, &QItemSelectionModel::selectionChanged, [&w, &window](){
+        QString text;
+        QFile file(w.model->selectedRowData(w.selection->selection()).toString());
+        if (file.exists()) {
+            if (file.open(QIODevice::ReadOnly)) {
+                 QTextStream stream(&file);
+                 text = stream.readAll();
+                 file.close();
+            }
+        }
+        window.textEdit->setText(text);
     });
 
 
