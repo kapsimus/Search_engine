@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
         mainwindow.ui
         filelistmodel.h
         filelistmodel.cpp
+        settings.h
+        settings.cpp
         ../modules/include/ConverterJSON.h
         ../modules/src/ConverterJSON.cpp
 )
