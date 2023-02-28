@@ -207,6 +207,27 @@ void ConverterJSON::NormalizeDocuments() {
 
 }
 
+std::string ConverterJSON::NormalizeDocument(std::string &text)
+{
+    std::string out;
+    for (auto symbol: text) {
+        if (symbol > 96 && symbol < 123) {
+            out += symbol;
+        } else if (symbol > 64 && symbol < 91) {
+            out += (symbol + 32);
+        } else if (symbol == ' ') {
+            out += symbol;
+        } else if (symbol == '-') {
+            out += symbol;
+        } else if (symbol == '\'') {
+            out += symbol;
+        }else if (symbol > 47 && symbol < 58) {
+            out += symbol;
+        }
+    }
+    return out;
+}
+
 void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
     std::ofstream file(GetAnswersPath());
     if (answers.empty()) {
