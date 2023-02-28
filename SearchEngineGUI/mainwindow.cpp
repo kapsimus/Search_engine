@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listView->setModel(model);
     selection = new QItemSelectionModel(model);
     ui->listView->setSelectionModel(selection);
+    ui->pbDeletePath->setDisabled(true);
+    ui->textEdit->setReadOnly(true);
 
 }
 

@@ -15,18 +15,29 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w(nullptr);
     Ui::MainWindow &window = *w.getUI();
-    QStringList fileList{"kjhkjh", "jhgfhgf"};
+    QStringList fileList;
 
-    QObject::connect(window.action_AddFiles, &QAction::triggered, [&fileList, &w](){
+    QObject::connect(window.action_AddFiles, &QAction::triggered, &a,[&fileList, &w](){
         fileList = QFileDialog::getOpenFileNames(&w,"", "d:/", "*.txt", nullptr);
         for (QString &path: fileList) {
         w.model->addValue(path);
         }
     });
-    QObject::connect(window.pbDeletePath, &QPushButton::clicked, [&w](){
+    QObject::connect(window.pbAddFiles, &QPushButton::clicked, &a, [&fileList, &w](){
+        fileList = QFileDialog::getOpenFileNames(&w,"", "d:/", "*.txt", nullptr);
+        for (QString &path: fileList) {
+        w.model->addValue(path);
+        }
+    });
+    QObject::connect(window.pbDeletePath, &QPushButton::clicked, &a, [&w](){
         w.model->deleteValues(w.selection->selection());
     });
-    QObject::connect(w.selection, &QItemSelectionModel::selectionChanged, [&w, &window](){
+    QObject::connect(w.selection, &QItemSelectionModel::selectionChanged, &a, [&w, &window](){
+        if (w.selection->hasSelection()) {
+            window.pbDeletePath->setDisabled(false);
+        } else {
+            window.pbDeletePath->setDisabled(true);
+        }
         QString text;
         QFile file(w.model->selectedRowData(w.selection->selection()).toString());
         if (file.exists()) {
@@ -40,7 +51,7 @@ int main(int argc, char *argv[])
     });
 
 
-    QObject::connect(window.action_Exit, &QAction::triggered, [&a](){
+    QObject::connect(window.action_Exit, &QAction::triggered, &a, [&a](){
         a.quit();
     });
     QObject::connect(window.action_Paths, &QAction::triggered, [&window](){
