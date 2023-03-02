@@ -5,8 +5,6 @@
 #include <QItemSelection>
 #include <QObject>
 #include <QStringList>
-#include "../modules/include/ConverterJSON.h"
-
 
 class FileListModel : public QAbstractItemModel
 {

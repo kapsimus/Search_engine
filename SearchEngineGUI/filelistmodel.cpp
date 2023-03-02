@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include "ConverterJSON.h"
 
 
 FileListModel::FileListModel(QObject *parent): QAbstractItemModel(parent)

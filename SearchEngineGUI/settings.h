@@ -4,18 +4,23 @@
 #pragma once
 #include <QString>
 #include <QDateTime>
+#include "ConverterJSON.h"
+#include "InvertedIndex.h"
 
 class Settings
 {
     QString _configPath;
     QString _requestPath;
-    QString _ansverPath;
+    QString _answerPath;
     QString _filesFolderPath;
     QString _name;
     QString _version;
     int _maxResponses;
     QDateTime _indexUpdateTime;
     QTime _indexUpdateInterval;
+    ConverterJSON _converter;
+    InvertedIndex _index;
+    SearchServer _server;
 
 public:
     Settings();
@@ -23,8 +28,8 @@ public:
     void setConfigPath(const QString &newConfigPath);
     const QString &requestPath() const;
     void setRequestPath(const QString &newRequestPath);
-    const QString &ansverPath() const;
-    void setAnsverPath(const QString &newAnsverPath);
+    const QString &answerPath() const;
+    void setAnswerPath(const QString &newAnswerPath);
     const QString &filesFolderPath() const;
     void setFilesFolderPath(const QString &newFilesFolderPath);
     const QString &name() const;
@@ -41,6 +46,9 @@ public:
     bool saveSettings();
     bool loadSettings();
 
+    ConverterJSON &converter();
+    InvertedIndex &index();
+    SearchServer &server();
 };
 
 #endif // SETTINGS_H

@@ -28,6 +28,10 @@ set(PROJECT_SOURCES
         settings.cpp
         ../modules/include/ConverterJSON.h
         ../modules/src/ConverterJSON.cpp
+        ../modules/include/InvertedIndex.h
+        ../modules/src/InvertedIndex.cpp
+        ../modules/include/SearchServer.h
+        ../modules/src/SearchServer.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

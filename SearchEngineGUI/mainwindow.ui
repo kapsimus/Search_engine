@@ -76,7 +76,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -173,6 +173,20 @@
                 </property>
                </spacer>
               </item>
+              <item>
+               <widget class="QPushButton" name="pbNormalize">
+                <property name="text">
+                 <string>Normalize</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbAddFiles">
+                <property name="text">
+                 <string>Add Files</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -185,6 +199,16 @@
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="tabRequests">
+       <attribute name="title">
+        <string>Requests</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabAnsvers">
+       <attribute name="title">
+        <string>Ansvers</string>
+       </attribute>
       </widget>
       <widget class="QWidget" name="tabPaths">
        <attribute name="title">
@@ -247,7 +271,7 @@
            </widget>
           </item>
           <item row="6" column="1" colspan="2">
-           <widget class="QLineEdit" name="leAnsversPath_2"/>
+           <widget class="QLineEdit" name="leAnswersPath"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_12">
@@ -372,7 +396,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Ansvers Path</string>
+             <string>Answers Path</string>
             </property>
            </widget>
           </item>
@@ -784,6 +808,9 @@
     <addaction name="action_AddFiles"/>
     <addaction name="action_RemoveFiles"/>
     <addaction name="separator"/>
+    <addaction name="action_Requests"/>
+    <addaction name="action_Ansvers"/>
+    <addaction name="separator"/>
     <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menu_Preferences">
@@ -837,6 +864,16 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Requests">
+   <property name="text">
+    <string>Requests</string>
+   </property>
+  </action>
+  <action name="action_Ansvers">
+   <property name="text">
+    <string>Ansvers</string>
    </property>
   </action>
  </widget>

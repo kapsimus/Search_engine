@@ -1,8 +1,8 @@
+#include <QString>
+#include <QFile>
+#include <QDir>
 #include "settings.h"
 #include "nlohmann/json.hpp"
-#include "../modules/include/ConverterJSON.h"
-#include <QString>
-#include <string>
 
 const QString &Settings::configPath() const
 {
@@ -24,14 +24,14 @@ void Settings::setRequestPath(const QString &newRequestPath)
     _requestPath = newRequestPath;
 }
 
-const QString &Settings::ansverPath() const
+const QString &Settings::answerPath() const
 {
-    return _ansverPath;
+    return _answerPath;
 }
 
-void Settings::setAnsverPath(const QString &newAnsverPath)
+void Settings::setAnswerPath(const QString &newAnswerPath)
 {
-    _ansverPath = newAnsverPath;
+    _answerPath = newAnswerPath;
 }
 
 const QString &Settings::filesFolderPath() const
@@ -112,7 +112,57 @@ bool Settings::loadSettings()
     return true;
 }
 
-Settings::Settings()
+ConverterJSON &Settings::converter()
 {
+    return _converter;
+}
+
+InvertedIndex &Settings::index()
+{
+    return _index;
+}
+
+SearchServer &Settings::server()
+{
+    return _server;
+}
+
+Settings::Settings():_server(_index)
+{
+    QFile file("settings.json");
+    if (!file.exists()) {
+        nlohmann::json json;
+        json["paths"]["files"] = "resources";
+        json["paths"]["config"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetConfigPath();
+        json["paths"]["requests"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetRequestsPath();
+        json["paths"]["answers"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetAnswersPath();
+        setConfigPath(QString::fromStdString(json["paths"]["config"]));
+        setRequestPath(QString::fromStdString(json["paths"]["requests"]));
+        setAnswerPath(QString::fromStdString(json["paths"]["answers"]));
+        std::string str{json.dump(4)};
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Ошибка при открытии файла";
+        } else {
+            file.write(str.c_str(), str.size());
+            file.close();
+        }
+    } else {
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            qDebug() << "Ошибка при открытии файла";
+        } else {
+            QTextStream stream(&file);
+            QString text = stream.readAll();
+            file.close();
+            nlohmann::json json = nlohmann::json::parse(text.toStdString());
+            _converter.SetConfigPath(json["paths"]["config"]);
+            _converter.SetRequestsPath(json["paths"]["requests"]);
+            _converter.SetAnswersPath(json["paths"]["answers"]);
+            setConfigPath(QString::fromStdString(json["paths"]["config"]));
+            setRequestPath(QString::fromStdString(json["paths"]["requests"]));
+            setAnswerPath(QString::fromStdString(json["paths"]["answers"]));
+        }
+    }
 
 }
