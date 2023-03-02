@@ -57,11 +57,29 @@ int main(int argc, char *argv[])
         }
         window.textEdit->setText(text);
     });
+    // кнопка Cancel в меню Paths
     QObject::connect(window.pbCancelPaths, &QPushButton::clicked, &a, [&window](){
         window.tabWindow->setCurrentIndex(0);
     });
+    // кнопка Cancel в меню Settings
     QObject::connect(window.pbCancelSettings, &QPushButton::clicked, &a, [&window](){
         window.tabWindow->setCurrentIndex(0);
+    });
+    QObject::connect(window.pbNormalize, &QPushButton::clicked, &a, [&w, &window](){
+        QFile file(w.model->selectedRowData(w.selection->selection()).toString());
+        if (file.exists()) {
+            if (file.open(QIODevice::ReadWrite)) {
+                 QTextStream stream(&file);
+                 QString text = stream.readAll();
+                 std::string str = text.toStdString();
+                 str = w.settings->converter().NormalizeDocument(str);
+                 text = QString::fromStdString(str);
+                 file.resize(0);
+                 file.write(text.toStdString().c_str());
+                 file.close();
+            }
+        }
+
     });
 
     //действия из меню
