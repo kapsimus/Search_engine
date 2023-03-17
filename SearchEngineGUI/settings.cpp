@@ -132,13 +132,14 @@ Settings::Settings():_server(_index)
     QFile file("settings.json");
     if (!file.exists()) {
         nlohmann::json json;
-        json["paths"]["files"] = "resources";
+        json["paths"]["files"] = QDir::current().absolutePath().toStdString() + "/" + "resources";
         json["paths"]["config"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetConfigPath();
         json["paths"]["requests"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetRequestsPath();
         json["paths"]["answers"] = QDir::current().absolutePath().toStdString() + "/" + _converter.GetAnswersPath();
         setConfigPath(QString::fromStdString(json["paths"]["config"]));
         setRequestPath(QString::fromStdString(json["paths"]["requests"]));
         setAnswerPath(QString::fromStdString(json["paths"]["answers"]));
+        setFilesFolderPath(QString::fromStdString(json["paths"]["files"]));
         std::string str{json.dump(4)};
         if (!file.open(QIODevice::WriteOnly))
         {
@@ -159,9 +160,11 @@ Settings::Settings():_server(_index)
             _converter.SetConfigPath(json["paths"]["config"]);
             _converter.SetRequestsPath(json["paths"]["requests"]);
             _converter.SetAnswersPath(json["paths"]["answers"]);
-            setConfigPath(QString::fromStdString(json["paths"]["config"]));
-            setRequestPath(QString::fromStdString(json["paths"]["requests"]));
-            setAnswerPath(QString::fromStdString(json["paths"]["answers"]));
+            _converter.SetFilesFolderPath(json["paths"]["files"]);
+            setConfigPath(QString::fromStdString(_converter.GetConfigPath()));
+            setRequestPath(QString::fromStdString(_converter.GetRequestsPath()));
+            setAnswerPath(QString::fromStdString(_converter.GetAnswersPath()));
+            setFilesFolderPath(QString::fromStdString(_converter.GetFilesFolderPath()));
         }
     }
 

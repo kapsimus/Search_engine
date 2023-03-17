@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
         filelistmodel.cpp
         settings.h
         settings.cpp
+        lineeditdelegate.h
+        lineeditdelegate.cpp
         ../modules/include/ConverterJSON.h
         ../modules/src/ConverterJSON.cpp
         ../modules/include/InvertedIndex.h

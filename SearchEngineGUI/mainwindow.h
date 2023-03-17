@@ -3,9 +3,11 @@
 
 #pragma once
 #include <QMainWindow>
+#include <QStandardItemModel>
 #include <QStringList>
 #include "filelistmodel.h"
 #include "settings.h"
+#include "lineeditdelegate.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,8 +19,11 @@ class MainWindow : public QMainWindow
 
 public:
     Ui::MainWindow* getUI();
+    FileListModel *requestModel;
     FileListModel *model;
     QItemSelectionModel *selection;
+    QItemSelectionModel *requestSelection;
+    LineEditDelegate *requestDelegate;
     Settings *settings;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

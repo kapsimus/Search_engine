@@ -8,10 +8,16 @@
 class ConverterJSON {
 private:
     size_t requestCount = 8;
+    std::string FILES_FOLDER_PATH = "resources";
     std::string CONFIG_PATH = "config.json";
     std::string REQUESTS_PATH = "requests.json";
     std::string ANSWERS_PATH = "answers.json";
 public:
+/**
+* сеттер переменной пути к каталогу с текстовыми файлами
+* @path передаётся путь к каталогу с файлами
+*/
+    void SetFilesFolderPath(const std::string& path);
 /**
 * сеттер переменной пути к файлу Config
 * @path передаётся путь к файлу Config
@@ -28,6 +34,11 @@ public:
 */
     void SetAnswersPath(const std::string& path);
 
+/**
+* геттер переменной пути к каталогу с текстовыми файлами
+* @return возвращается путь каталогу с текстовыми файлами
+*/
+    std::string GetFilesFolderPath() const;
 /**
 * геттер переменной пути к файлу Config
 * @return возврвщается путь к файлу Config

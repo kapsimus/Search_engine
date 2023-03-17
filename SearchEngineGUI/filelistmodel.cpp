@@ -59,6 +59,12 @@ QVariant FileListModel::selectedRowData(const QItemSelection &selected)
     }
 }
 
+bool FileListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    qDebug() << role;
+    return true;
+}
+
 void FileListModel::addValue(const QString &value)
 {
     _data.append(value);
@@ -87,4 +93,9 @@ void FileListModel::deleteValues(const QItemSelection &selected)
         list.push_back(str.toStdString());
     }
     conv.WriteFilesToConfig(list);
+}
+
+Qt::ItemFlags FileListModel::flags(const QModelIndex &index) const
+{
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }

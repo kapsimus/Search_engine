@@ -2,6 +2,14 @@
 #include <iostream>
 #include "ConverterJSON.h"
 
+void ConverterJSON::SetFilesFolderPath(const std::string &path)
+{
+    if (!path.empty()) {
+        FILES_FOLDER_PATH = path;
+    }
+
+}
+
 void ConverterJSON::SetConfigPath(const std::string &path) {
     if (!path.empty()) {
         CONFIG_PATH = path;
@@ -16,6 +24,11 @@ void ConverterJSON::SetAnswersPath(const std::string &path) {
     if (!path.empty()) {
         ANSWERS_PATH = path;
     }
+}
+
+std::string ConverterJSON::GetFilesFolderPath() const
+{
+    return FILES_FOLDER_PATH;
 }
 
 std::string ConverterJSON::GetConfigPath() const {
