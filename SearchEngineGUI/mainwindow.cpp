@@ -19,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     settings = new Settings();
     settings->loadSettings();
-    QStringList fileList;
     ConverterJSON &conv = settings->converter();
     InvertedIndex &index = settings->index();
     SearchServer &server = settings->server();
@@ -54,15 +54,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //добавить файлы из меню
-    QObject::connect(ui->action_AddFiles, &QAction::triggered, [&fileList, this](){
-        fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
+    QObject::connect(ui->action_AddFiles, &QAction::triggered, [this](){
+        QStringList fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
         for (QString &path: fileList) {
         model->addValue(path);
         }
     });
     //добавить файлы кнопкой
-    QObject::connect(ui->pbAddFiles, &QPushButton::clicked, [&fileList, this](){
-        fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
+    QObject::connect(ui->pbAddFiles, &QPushButton::clicked, [this](){
+        QStringList fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
         for (QString &path: fileList) {
         model->addValue(path);
         }
@@ -117,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->pbAddRequest, &QPushButton::clicked, [this](){
         requestModel->addValue(ui->leRequest->text());
         ui->leRequest->clear();
+        ui->leRequest->setFocus();
     });
 
     //действия из меню
@@ -125,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     QObject::connect(ui->action_Requests, &QAction::triggered, [this](){
         ui->tabWindow->setCurrentIndex(1);
+        ui->leRequest->setFocus();
     });
     QObject::connect(ui->action_Ansvers, &QAction::triggered, [this](){
        ui->tabWindow->setCurrentIndex(2);
@@ -153,9 +155,7 @@ Ui::MainWindow* MainWindow::getUI() {
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    delete model;
-    delete selection;
     delete settings;
+    delete ui;
 }
 

@@ -44,14 +44,14 @@ bool LineEditDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
     qDebug() << "EDITOR EVENT";
      QRect r(option.rect.width()-20, option.rect.y(), 20, 20);
      if (event->type() == QEvent::MouseButtonPress) {
-      pressPos = static_cast <QMouseEvent*> (event)->pos();
+      _pressPos = static_cast <QMouseEvent*> (event)->pos();
       qDebug() << "MOUSE PRESS";
-      return r.contains(pressPos);
+      return r.contains(_pressPos);
      }
      else if(event->type() == QEvent::MouseButtonRelease) {
          qDebug() << "MOUSE RELEASE";
          QPoint releasePos = static_cast <QMouseEvent*> (event)->pos();
-        if (r.contains(pressPos) && r.contains(releasePos)) {
+        if (r.contains(_pressPos) && r.contains(releasePos)) {
         emit del(index);
       return true;
       }

@@ -24,7 +24,7 @@ public:
 signals:
     void del(QModelIndex index);
 private:
-    QPoint pressPos;
+    QPoint _pressPos;
 
 
 };
