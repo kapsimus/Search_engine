@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "ConverterJSON.h"
+#include "ConfigException.h"
 
 void ConverterJSON::SetFilesFolderPath(const std::string &path)
 {
@@ -45,8 +46,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     std::vector<std::string> requests;
     std::ifstream file(GetRequestsPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << GetRequestsPath() << std::endl;
-        return requests;
+        throw ConfigException("Unable to open file " + GetRequestsPath());
     }
     nlohmann::json data = nlohmann::json::parse(file);
     file.close();
@@ -61,8 +61,7 @@ bool ConverterJSON::SetRequests(const std::vector<std::string>& requestList) {
     if (!requestList.empty()) {
         std::ofstream file(GetRequestsPath());
         if (!file.is_open()) {
-            std::cout << "Unable to open file " << GetRequestsPath() << std::endl;
-            return false;
+            throw ConfigException("Unable to open file " + GetRequestsPath());
         }
         nlohmann::json json;
         for (auto request: requestList){
@@ -75,11 +74,11 @@ bool ConverterJSON::SetRequests(const std::vector<std::string>& requestList) {
         return false;
     }
 }
-
+// сделано для тестов
 bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsList) {
     nlohmann::json config = this->GetConfig();
     if (config.empty()) {
-        return false;
+        throw ConfigException("Config is empty");
     }
     config["files"].clear();
     std::string prefix{"./resources/filename"};
@@ -121,9 +120,9 @@ bool ConverterJSON::WriteDocsToFiles(const std::vector<std::string> &documentsLi
 }
 
 bool ConverterJSON::WriteFilesToConfig(const std::vector<std::string> &documentsList) {
-    nlohmann::json config = this->GetConfig();
+    nlohmann::json config = GetConfig();
     if (config.empty()) {
-        return false;
+        throw ConfigException("Config is empty");
     }
     config["files"].clear();
     if (!documentsList.empty()) {
@@ -132,8 +131,7 @@ bool ConverterJSON::WriteFilesToConfig(const std::vector<std::string> &documents
         }
         std::ofstream fileConfig(GetConfigPath());
         if (!fileConfig.is_open()) {
-            std::cout << "Unable to open file " << GetConfigPath() << std::endl;
-            return false;
+            throw ConfigException("Unable to open file " + GetConfigPath());
         }
         fileConfig << config.dump(4);
         fileConfig.close();
@@ -145,8 +143,10 @@ nlohmann::json ConverterJSON::GetConfig() {
     std::ifstream file(GetConfigPath());
     nlohmann::json config;
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
-        return config;
+        throw ConfigException("Unable to open file " + GetConfigPath());
+    }
+    if (config.empty()) {
+        throw ConfigException("Config is empty");
     }
     config = nlohmann::json::parse(file);
     file.close();
@@ -156,8 +156,7 @@ nlohmann::json ConverterJSON::GetConfig() {
 int ConverterJSON::GetResponsesLimit() {
     std::ifstream file(GetConfigPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
-        return -1;
+        throw ConfigException("Unable to open file " + GetConfigPath());
     }
     nlohmann::json data = nlohmann::json::parse(file);
     file.close();
@@ -168,8 +167,10 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
     std::vector<std::string> files;
     std::ifstream file(GetConfigPath());
     if (!file.is_open()) {
-        std::cout << "Unable to open file " << GetConfigPath() << std::endl;
-        return files;
+        throw ConfigException("Unable to open file " + GetConfigPath());
+    }
+    if (file.peek() == EOF) {
+        throw ConfigException("Config is empty");
     }
     nlohmann::json data = nlohmann::json::parse(file);
     file.close();
@@ -180,7 +181,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
 }
 
 void ConverterJSON::NormalizeDocuments() {
-    auto docList = this->GetTextDocuments();
+    auto docList = GetTextDocuments();
     if (!docList.empty()) {
         for (int i = 0; i < docList.size(); ++i) {
             std::ifstream file(docList[i]);
@@ -243,6 +244,7 @@ std::string ConverterJSON::NormalizeDocument(std::string &text)
 
 void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
     std::ofstream file(GetAnswersPath());
+    int responseLimit = GetResponsesLimit();
     if (answers.empty()) {
         file.close();
         return;
@@ -250,7 +252,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers)
         nlohmann::json json;
         std::string requestName;
         size_t requestNumber;
-        for (int i = 0; i < answers.size(); ++i) {
+        for (int i = 0; (i < answers.size() && i < responseLimit); ++i) {
             requestNumber = i + 1;
             if (requestNumber < 10) requestName = "request00";
             else if (requestNumber < 100) requestName = "request0";
