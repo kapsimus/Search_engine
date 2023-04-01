@@ -1,7 +1,7 @@
 #include "ConfigException.h"
 
-ConfigException::ConfigException(std::string msg): message(msg) {}
+ConfigException::ConfigException(std::string message): _message(message) {}
 
 std::string ConfigException::getMessage() const {
-    return message;
+    return _message;
 }

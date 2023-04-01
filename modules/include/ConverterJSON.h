@@ -7,7 +7,7 @@
 
 class ConverterJSON {
 private:
-    size_t requestCount = 8;
+    size_t _requestCount = 8;
     std::string FILES_FOLDER_PATH = "resources";
     std::string CONFIG_PATH = "config.json";
     std::string REQUESTS_PATH = "requests.json";

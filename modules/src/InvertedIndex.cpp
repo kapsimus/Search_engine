@@ -18,7 +18,7 @@ void InvertedIndex::UpdateDocumentBase(const std::vector<std::string> &input_doc
             if (file.is_open()) {
                 auto ss = std::ostringstream{};
                 ss << file.rdbuf();
-                docs.push_back(ss.str());
+                _docs.push_back(ss.str());
             } else {
                 std::cout << "Unable to open file " << input_docs[i] << std::endl;
             }
@@ -75,7 +75,7 @@ void InvertedIndex::UpdateDocumentBase(const std::vector<std::string> &input_doc
         threadCount = MIN_THREAD_COUNT;
     }
     for (int threadNum = 0; threadNum < threadCount && threadNum < DOCS_SIZE; threadNum++) {
-        threadIndex.push_back(std::thread(task, std::ref(docId), std::ref(freq_dictionary), std::ref(docs)));
+        threadIndex.push_back(std::thread(task, std::ref(docId), std::ref(_freq_dictionary), std::ref(_docs)));
     }
     for (int threadNum = 0; threadNum < threadIndex.size(); threadNum++) {
         threadIndex[threadNum].join();
@@ -83,8 +83,8 @@ void InvertedIndex::UpdateDocumentBase(const std::vector<std::string> &input_doc
 }
 
 std::vector<Entry> InvertedIndex::GetWordCount(const std::string &word) {
-    auto it = freq_dictionary.find(word);
-    if (it != freq_dictionary.end()){
+    auto it = _freq_dictionary.find(word);
+    if (it != _freq_dictionary.end()){
         return it->second;
     } else {
         return std::vector<Entry>();

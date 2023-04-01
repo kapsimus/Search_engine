@@ -17,7 +17,7 @@ public:
     InvertedIndex() = default;
 /**
 * Обновить или заполнить базу документов, по которой будем совершать
-поиск
+поиск с заполнением частотного словаря freq_dictionary
 * @param input_docs содержимое документов
 */
     void UpdateDocumentBase(const std::vector<std::string>& input_docs);
@@ -29,7 +29,7 @@ public:
 */
     std::vector<Entry> GetWordCount(const std::string& word);
 private:
-    std::vector<std::string> docs; // список содержимого документов
-    std::map<std::string, std::vector<Entry>> freq_dictionary; // частотный словарь
+    std::vector<std::string> _docs; // список содержимого документов
+    std::map<std::string, std::vector<Entry>> _freq_dictionary; // частотный словарь
 };
 

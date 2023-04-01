@@ -4,8 +4,8 @@
 
 class ConfigException: public std::exception {
 private:
-    std::string message;
+    std::string _message;
 public:
-    ConfigException(std::string msg);
+    ConfigException(std::string message);
     std::string getMessage() const;
 };
