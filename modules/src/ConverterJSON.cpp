@@ -53,7 +53,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     for (auto it = data["requests"].begin(); it != data["requests"].end(); it++) {
         requests.push_back(*it);
     }
-    requestCount = requests.size();
+    _requestCount = requests.size();
     return requests;
 }
 
@@ -145,7 +145,7 @@ nlohmann::json ConverterJSON::GetConfig() {
     if (!file.is_open()) {
         throw ConfigException("Unable to open file " + GetConfigPath());
     }
-    if (config.empty()) {
+    if (file.peek() == EOF) {
         throw ConfigException("Config is empty");
     }
     config = nlohmann::json::parse(file);

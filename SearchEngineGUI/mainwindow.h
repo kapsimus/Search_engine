@@ -28,6 +28,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 public slots:
+    void addRequest();
+    void addFiles();
 
 private:
     Ui::MainWindow *ui;

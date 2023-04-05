@@ -9,6 +9,8 @@
 #include <QListView>
 #include <QFileDialog>
 #include <QFile>
+#include <QRegularExpression>
+#include <QMessageBox>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "filelistmodel.h"
@@ -45,34 +47,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listView->setSelectionModel(selection);
 
     requestModel = new FileListModel(this);
-    ui->lvRequest->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    requestDelegate = new LineEditDelegate(ui->lvRequest);
-    ui->lvRequest->setItemDelegate(requestDelegate);
     ui->lvRequest->setModel(requestModel);
+    ui->lvRequest->setEditTriggers(QAbstractItemView::NoEditTriggers);
     requestSelection = new QItemSelectionModel(requestModel);
     ui->lvRequest->setSelectionModel(requestSelection);
 
 
     //добавить файлы из меню
-    QObject::connect(ui->action_AddFiles, &QAction::triggered, [this](){
-        QStringList fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
-        for (QString &path: fileList) {
-        model->addValue(path);
-        }
-    });
+    QObject::connect(ui->action_AddFiles, &QAction::triggered, this, &MainWindow::addFiles);
+
     //добавить файлы кнопкой
-    QObject::connect(ui->pbAddFiles, &QPushButton::clicked, [this](){
-        QStringList fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
-        for (QString &path: fileList) {
-        model->addValue(path);
-        }
-    });
+    QObject::connect(ui->pbAddFiles, &QPushButton::clicked, this, &MainWindow::addFiles);
+
     //удалить файлы
-    QObject::connect(ui->pbDeletePath, &QPushButton::clicked, [this](){
+    QObject::connect(ui->pbDeletePath, &QPushButton::clicked, this, [this](){
         model->deleteValues(selection->selection());
     });
+
     //отключение-включение кнопки Delete при выделении, вывод текста файла при единичном выделении
-    QObject::connect(selection, &QItemSelectionModel::selectionChanged, [this](){
+    QObject::connect(selection, &QItemSelectionModel::selectionChanged, this, [this](){
         if (selection->hasSelection()) {
             ui->pbDeletePath->setDisabled(false);
         } else {
@@ -90,15 +83,15 @@ MainWindow::MainWindow(QWidget *parent)
         ui->textEdit->setText(text);
     });
     // кнопка Cancel в меню Paths
-    QObject::connect(ui->pbCancelPaths, &QPushButton::clicked, [this](){
+    QObject::connect(ui->pbCancelPaths, &QPushButton::clicked, this, [this](){
         ui->tabWindow->setCurrentIndex(0);
     });
     // кнопка Cancel в меню Settings
-    QObject::connect(ui->pbCancelSettings, &QPushButton::clicked, [this](){
+    QObject::connect(ui->pbCancelSettings, &QPushButton::clicked, this, [this](){
         ui->tabWindow->setCurrentIndex(0);
     });
     // нормализация текста (кнопка Normalise)
-    QObject::connect(ui->pbNormalize, &QPushButton::clicked, [this](){
+    QObject::connect(ui->pbNormalize, &QPushButton::clicked, this, [this](){
         QFile file(model->selectedRowData(selection->selection()).toString());
         if (file.exists()) {
             if (file.open(QIODevice::ReadWrite)) {
@@ -114,36 +107,38 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
     });
-    QObject::connect(ui->pbAddRequest, &QPushButton::clicked, [this](){
-        requestModel->addValue(ui->leRequest->text());
-        ui->leRequest->clear();
-        ui->leRequest->setFocus();
-    });
+
+    //кнопка добавления запроса Add Request
+    QObject::connect(ui->pbAddRequest, &QPushButton::clicked, this, &MainWindow::addRequest);
+
+    //добавление запроса нажатием клавиши Enter
+    QObject::connect(ui->leRequest, &QLineEdit::returnPressed, this, &MainWindow::addRequest);
+
 
     //действия из меню
-    QObject::connect(ui->action_Exit, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Exit, &QAction::triggered, this, [this](){
         this->close();
     });
-    QObject::connect(ui->action_Requests, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Requests, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(1);
         ui->leRequest->setFocus();
     });
-    QObject::connect(ui->action_Ansvers, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Ansvers, &QAction::triggered, this, [this](){
        ui->tabWindow->setCurrentIndex(2);
     });
-    QObject::connect(ui->action_Paths, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Paths, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(3);
     });
-    QObject::connect(ui->action_Config, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Config, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(4);
     });
-    QObject::connect(ui->action_Help, &QAction::triggered, [this](){
+    QObject::connect(ui->action_Help, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(5);
     });
-    QObject::connect(ui->action_About, &QAction::triggered, [this](){
+    QObject::connect(ui->action_About, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(6);
     });
-    QObject::connect(ui->action_RemoveFiles, &QAction::triggered, [this](){
+    QObject::connect(ui->action_RemoveFiles, &QAction::triggered, this, [this](){
         ui->tabWindow->setCurrentIndex(0);
     });
 
@@ -157,5 +152,28 @@ MainWindow::~MainWindow()
 {
     delete settings;
     delete ui;
+}
+
+void MainWindow::addRequest()
+{
+    QStringList list = ui->leRequest->text().split(QRegularExpression("\\s+"));
+    for (const auto &word: list) {
+        if (!QRegularExpression("(^[a-z]+$)|(^[0-9]+$)|(^[a-z]+-[a-z]+$)").match(word).hasMatch()) {
+            QMessageBox::information(this, "Error", "Wrong request!");
+            ui->leRequest->setFocus();
+            return;
+        }
+    }
+    requestModel->addValue(ui->leRequest->text());
+    ui->leRequest->clear();
+    ui->leRequest->setFocus();
+}
+
+void MainWindow::addFiles()
+{
+    QStringList fileList = QFileDialog::getOpenFileNames(this,"", QDir::current().absolutePath(), "*.txt", nullptr);
+    for (QString &path: fileList) {
+        model->addValue(path);
+    }
 }
 

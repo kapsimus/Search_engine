@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "ConverterJSON.h"
+#include "ConfigException.h"
 
 
 FileListModel::FileListModel(QObject *parent): QAbstractItemModel(parent)
@@ -74,7 +75,13 @@ void FileListModel::addValue(const QString &value)
     for (QString str: _data) {
         list.push_back(str.toStdString());
     }
-    conv.WriteFilesToConfig(list);
+    try {
+        conv.WriteFilesToConfig(list);
+    }
+    catch (const ConfigException &ex) {
+            qDebug() << ex.getMessage().c_str();
+    }
+
 }
 
 void FileListModel::deleteValues(const QItemSelection &selected)
@@ -92,7 +99,12 @@ void FileListModel::deleteValues(const QItemSelection &selected)
     for (QString str: _data) {
         list.push_back(str.toStdString());
     }
-    conv.WriteFilesToConfig(list);
+    try {
+        conv.WriteFilesToConfig(list);
+    }
+    catch (const ConfigException &ex) {
+            qDebug() << ex.getMessage().c_str();
+    }
 }
 
 Qt::ItemFlags FileListModel::flags(const QModelIndex &index) const

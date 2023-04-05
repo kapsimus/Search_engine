@@ -3,6 +3,7 @@
 #include <QDir>
 #include "settings.h"
 #include "nlohmann/json.hpp"
+#include "ConfigException.h"
 
 const QString &Settings::configPath() const
 {
@@ -102,8 +103,13 @@ bool Settings::saveSettings()
 bool Settings::loadSettings()
 {
     ConverterJSON conv;
-    nlohmann::json config = conv.GetConfig();
-    if (config.empty()) {
+    conv.SetConfigPath(configPath().toStdString());
+    nlohmann::json config;
+    try {
+        config = conv.GetConfig();
+    }
+    catch (const ConfigException &ex) {
+        qDebug() << ex.getMessage().c_str();
         return false;
     }
     setName(QString::fromStdString(config["config"]["name"]));

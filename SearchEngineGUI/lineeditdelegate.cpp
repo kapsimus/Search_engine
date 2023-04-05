@@ -36,7 +36,6 @@ void LineEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionV
     QRect r = option.rect;
     r.setWidth(r.width() - 25);
     editor->setGeometry(r);
-    qDebug() << r;
 }
 
 bool LineEditDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)

@@ -34,6 +34,8 @@ set(PROJECT_SOURCES
         ../modules/src/InvertedIndex.cpp
         ../modules/include/SearchServer.h
         ../modules/src/SearchServer.cpp
+        ../modules/include/ConfigException.h
+        ../modules/src/ConfigException.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
