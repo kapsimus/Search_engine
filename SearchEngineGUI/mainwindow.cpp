@@ -42,9 +42,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->leFilesPath->setText(settings->filesFolderPath());
 
     model = new FileListModel(this);
-    ui->listView->setModel(model);
+    ui->lvFiles->setModel(model);
+    ui->lvFiles->setEditTriggers(QAbstractItemView::NoEditTriggers);
     selection = new QItemSelectionModel(model);
-    ui->listView->setSelectionModel(selection);
+    ui->lvFiles->setSelectionModel(selection);
 
     requestModel = new FileListModel(this);
     ui->lvRequest->setModel(requestModel);
@@ -63,6 +64,25 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->pbDeletePath, &QPushButton::clicked, this, [this](){
         model->deleteValues(selection->selection());
     });
+    //удалить запросы (delete request)
+    QObject::connect(ui->pbDeleteRequest, &QPushButton::clicked, this, [this](){
+        requestModel->deleteValues(requestSelection->selection());
+    });
+    //сохранить запросы в файл requests.json (Save Requests)
+    QObject::connect(ui->pbSaveRequests, &QPushButton::clicked, this, [this, &conv](){
+        std::vector<std::string> listRequest;
+        for (int i = 0; i < requestModel->rowCount(QModelIndex()); ++i) {
+            QModelIndex index = requestModel->index(i, 0, QModelIndex());
+            QVariant request = requestModel->data(index, Qt::DisplayRole);
+            listRequest.push_back(request.toString().toStdString());
+        }
+        if (conv.SetRequests(listRequest)) {
+            QMessageBox::information(this, "Sucess", "Request saved");
+        } else {
+            QMessageBox::information(this, "Error", "Request not saved");
+        }
+    });
+
 
     //отключение-включение кнопки Delete при выделении, вывод текста файла при единичном выделении
     QObject::connect(selection, &QItemSelectionModel::selectionChanged, this, [this](){
@@ -70,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
             ui->pbDeletePath->setDisabled(false);
         } else {
             ui->pbDeletePath->setDisabled(true);
+            return;
         }
         QString text;
         QFile file(model->selectedRowData(selection->selection()).toString());
