@@ -14,6 +14,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "filelistmodel.h"
+#include "tablemodel.h"
 #include "InvertedIndex.h"
 
 

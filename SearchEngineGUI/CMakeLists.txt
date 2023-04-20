@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
         settings.cpp
         lineeditdelegate.h
         lineeditdelegate.cpp
+        tablemodel.h
+        tablemodel.cpp
         ../modules/include/ConverterJSON.h
         ../modules/src/ConverterJSON.cpp
         ../modules/include/InvertedIndex.h
