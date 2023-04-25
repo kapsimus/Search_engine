@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <fstream>
 #include <iostream>
 #include "ConverterJSON.h"
@@ -242,7 +243,7 @@ std::string ConverterJSON::NormalizeDocument(std::string &text)
     return out;
 }
 
-void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
+void ConverterJSON::PutAnswers(std::vector<std::vector<RelativeIndex>> &answers) {
     std::ofstream file(GetAnswersPath());
     int responseLimit = GetResponsesLimit();
     if (answers.empty()) {
@@ -270,4 +271,36 @@ void ConverterJSON::putAnswers(std::vector<std::vector<RelativeIndex>> &answers)
         file << json.dump(4);
         file.close();
     }
+}
+
+std::vector<Answer> ConverterJSON::GetAnswers() {
+    std::ifstream file(GetAnswersPath());
+    nlohmann::json answersJSON;
+    if (!file.is_open()) {
+        throw ConfigException("Unable to open file " + GetAnswersPath());
+    }
+    if (file.peek() == EOF) {
+        throw ConfigException("Answers is empty");
+    }
+    answersJSON = nlohmann::json::parse(file);
+    file.close();
+    std::vector<Answer> answers;
+    for (auto it = answersJSON["answers"].begin(); it != answersJSON["answers"].end(); it++) {
+        Answer tempAnswer;
+        tempAnswer.requestId = it.key();
+        std::string temp = answersJSON["answers"][tempAnswer.requestId]["result"];
+        tempAnswer.result = (temp == "true") ? true : false;
+        if (tempAnswer.result) {
+            for (auto it = answersJSON["answers"][tempAnswer.requestId]["relevance"].begin(); it != answersJSON["answers"][tempAnswer.requestId]["relevance"].end(); it++) {
+                tempAnswer.docId = it.value()["docid"];
+                tempAnswer.rank = it.value()["rank"];
+                answers.push_back(tempAnswer);
+            }
+        } else {
+            tempAnswer.docId = -1;
+            tempAnswer.rank = -1;
+            answers.push_back(tempAnswer);
+        }
+    }
+    return answers;
 }

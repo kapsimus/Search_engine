@@ -76,7 +76,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabFile">
        <attribute name="title">
@@ -302,7 +302,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabAnsvers">
+      <widget class="QWidget" name="tabAnswers">
        <attribute name="title">
         <string>Ansvers</string>
        </attribute>
@@ -332,19 +332,19 @@
              </font>
             </property>
             <property name="text">
-             <string>Ansvers</string>
+             <string>Answers</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QTableView" name="tvAnsvers"/>
+           <widget class="QTableView" name="tvAnswers"/>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QPushButton" name="pbGetAnsvers">
+             <widget class="QPushButton" name="pbGetAnswers">
               <property name="text">
-               <string>Get Ansvers</string>
+               <string>Get Answers</string>
               </property>
              </widget>
             </item>
@@ -996,7 +996,7 @@
     <addaction name="action_RemoveFiles"/>
     <addaction name="separator"/>
     <addaction name="action_Requests"/>
-    <addaction name="action_Ansvers"/>
+    <addaction name="action_Answers"/>
     <addaction name="separator"/>
     <addaction name="action_Exit"/>
    </widget>
@@ -1058,9 +1058,9 @@
     <string>Requests</string>
    </property>
   </action>
-  <action name="action_Ansvers">
+  <action name="action_Answers">
    <property name="text">
-    <string>Ansvers</string>
+    <string>Answers</string>
    </property>
   </action>
  </widget>

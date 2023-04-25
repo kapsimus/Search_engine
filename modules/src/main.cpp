@@ -26,7 +26,7 @@ int main() {
     std::vector<Entry> wordsCount = index.GetWordCount("123");
     SearchServer server(index);
     std::vector<std::vector<RelativeIndex>> answers = server.search(conv.GetRequests());
-    conv.putAnswers(answers);
+    conv.PutAnswers(answers);
     timer.End("main elapsed:");
     return 0;
 }

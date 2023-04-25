@@ -54,6 +54,10 @@ MainWindow::MainWindow(QWidget *parent)
     requestSelection = new QItemSelectionModel(requestModel);
     ui->lvRequest->setSelectionModel(requestSelection);
 
+    answersModel = new TableModel(this);
+    ui->tvAnswers->setModel(answersModel);
+    ui->tvAnswers->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
 
     //добавить файлы из меню
     QObject::connect(ui->action_AddFiles, &QAction::triggered, this, &MainWindow::addFiles);
@@ -136,6 +140,14 @@ MainWindow::MainWindow(QWidget *parent)
     //добавление запроса нажатием клавиши Enter
     QObject::connect(ui->leRequest, &QLineEdit::returnPressed, this, &MainWindow::addRequest);
 
+    //кнопка получения ответов Get Ansvers
+    QObject::connect(ui->pbGetAnswers, &QPushButton::clicked, this, [this, &conv](){
+        std::vector<Answer> answers;
+        answers = conv.GetAnswers();
+        for (auto &answer: answers) {
+            answersModel->addValue(answer);
+        }
+    });
 
     //действия из меню
     QObject::connect(ui->action_Exit, &QAction::triggered, this, [this](){
@@ -145,7 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tabWindow->setCurrentIndex(1);
         ui->leRequest->setFocus();
     });
-    QObject::connect(ui->action_Ansvers, &QAction::triggered, this, [this](){
+    QObject::connect(ui->action_Answers, &QAction::triggered, this, [this](){
        ui->tabWindow->setCurrentIndex(2);
     });
     QObject::connect(ui->action_Paths, &QAction::triggered, this, [this](){

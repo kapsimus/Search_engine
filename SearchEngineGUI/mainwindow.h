@@ -8,6 +8,7 @@
 #include "filelistmodel.h"
 #include "settings.h"
 #include "lineeditdelegate.h"
+#include "tablemodel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,6 +22,7 @@ public:
     Ui::MainWindow* getUI();
     FileListModel *requestModel;
     FileListModel *model;
+    TableModel *answersModel;
     QItemSelectionModel *selection;
     QItemSelectionModel *requestSelection;
     LineEditDelegate *requestDelegate;

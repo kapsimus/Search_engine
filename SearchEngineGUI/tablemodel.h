@@ -5,12 +5,13 @@
 #include <QItemSelection>
 #include <QObject>
 #include <QStringList>
+#include "answer.h"
 
 class TableModel : public QAbstractItemModel
 {
     Q_OBJECT
 private:
-    QVector<QStringList> _data;
+    QVector<Answer> _data;
 public:
     explicit TableModel(QObject *parent = nullptr);
 
@@ -25,10 +26,10 @@ public:
     QVariant selectedRowData(const QItemSelection &selected);
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 public slots:
-    void addValue(const QStringList &value);
+    void addValue(const Answer &value);
     void deleteValues(const QItemSelection &selected);
-
 };
 
 #endif // TABLEMODEL_H

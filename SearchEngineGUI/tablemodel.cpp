@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-
 TableModel::TableModel(QObject *parent): QAbstractItemModel(parent)
 {
 
@@ -29,14 +28,22 @@ int TableModel::columnCount(const QModelIndex &parent) const
     if (_data.empty()) {
         return 0;
     } else {
-        return _data[0].size();
+        return 4;
     }
 }
 
 QVariant TableModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole) {
-        return _data.at(index.row()).at(index.column());
+        if (index.column() == 0) {
+            return QString::fromLatin1(_data[index.row()].requestId);
+        } else if (index.column() == 1) {
+            return _data[index.row()].result;
+        } else if (index.column() == 2) {
+            return _data[index.row()].docId == -1 ? "Empty" : QString::number(_data[index.row()].docId);
+        } else if (index.column() == 3) {
+            return _data[index.row()].rank == -1 ? "Empty" : QString::number(_data[index.row()].rank, 'f', 12);
+        }
     }
     return QVariant();
 }
@@ -58,7 +65,7 @@ QVariant TableModel::selectedRowData(const QItemSelection &selected)
     if (items.size() != 1) {
         return QVariant();
     } else {
-        return _data[items.begin()->row()][items.begin()->column()];
+        return QString::fromLatin1(_data[items.begin()->row()].requestId);
     }
 }
 
@@ -68,7 +75,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
     return true;
 }
 
-void TableModel::addValue(const QStringList &value)
+void TableModel::addValue(const Answer &value)
 {
     _data.append(value);
     emit layoutChanged();
@@ -89,4 +96,24 @@ void TableModel::deleteValues(const QItemSelection &selected)
 Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role != Qt::DisplayRole)
+             return QVariant();
+    if (orientation == Qt::Horizontal) {
+        if(section == 0) {
+            return QString("Request ID");
+        } else if(section == 1) {
+            return QString{"Result"};
+        } else if(section == 2) {
+            return QString{"Document ID"};
+        } else if(section == 3) {
+            return QString{"Rank"};
+        }
+    } else {
+        return QString("Row %1").arg(section);
+    }
+    return QVariant();
 }
